@@ -15,7 +15,7 @@ function AuctionHistory() {
         const [createdRes, wonRes, participatedRes] = await Promise.all([
           API.get("/auctions/my-created"),
           API.get("/auctions/my-won"),
-          API.get("/auctions/my-participated")
+          API.get("/auctions/my-participated"),
         ]);
 
         setCreated(createdRes.data.auctions || []);
@@ -32,41 +32,62 @@ function AuctionHistory() {
     fetchHistory();
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading history...</p>;
-  if (error) return <p className="text-red-600 text-center mt-10">{error}</p>;
+  if (loading) {
+    return (
+      <p className="text-center mt-16 text-gray-500">
+        Loading history…
+      </p>
+    );
+  }
 
+  if (error) {
+    return (
+      <p className="text-red-600 text-center mt-16">
+        {error}
+      </p>
+    );
+  }
+
+  /* ================= SECTION COMPONENT ================= */
   const Section = ({ title, subtitle, auctions, badgeColor, linkPrefix }) => (
-    <div className="mb-14">
-      {/* Section Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badgeColor}`}>
+    <div className="mb-12">
+
+      {/* Header */}
+      <div className="flex items-start gap-3 mb-5">
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}`}
+        >
           {title.split(" ")[0]}
         </span>
         <div>
-          <h3 className="text-xl font-bold">{title.substring(2)}</h3>
+          <h3 className="text-lg sm:text-xl font-bold leading-tight">
+            {title.substring(2)}
+          </h3>
           {subtitle && (
-            <p className="text-sm text-gray-500">{subtitle}</p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              {subtitle}
+            </p>
           )}
         </div>
       </div>
 
-      {/* Cards */}
+      {/* Content */}
       {auctions.length === 0 ? (
-        <div className="bg-white rounded-lg border p-6 text-gray-500 text-sm">
+        <div className="bg-white rounded-xl border p-5 text-gray-500 text-sm">
           No auctions found.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {auctions.map((auction) => (
             <Link
               key={auction._id}
               to={`${linkPrefix}/${auction._id}`}
-              className="group"
+              className="block"
             >
-              <div className="bg-white rounded-xl border shadow-sm p-5 h-full flex flex-col justify-between hover:shadow-md hover:border-blue-400 transition">
-                
+              <div className="bg-white rounded-xl border shadow-sm p-4 h-full flex flex-col justify-between transition sm:hover:shadow-md sm:hover:border-blue-400">
+
                 {/* Title */}
-                <h4 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition">
+                <h4 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">
                   {auction.title}
                 </h4>
 
@@ -94,7 +115,7 @@ function AuctionHistory() {
                 </div>
 
                 {/* CTA */}
-                <div className="mt-4 text-sm font-medium text-blue-600 group-hover:underline">
+                <div className="mt-4 text-sm font-medium text-blue-600">
                   View Details →
                 </div>
               </div>
@@ -106,18 +127,20 @@ function AuctionHistory() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 py-12 px-4 flex justify-center">
+    <div className="min-h-screen bg-slate-100 px-4 py-8 sm:py-12 flex justify-center">
       <div className="w-full max-w-7xl">
 
         {/* Page Header */}
-        <div className="mb-10">
-          <h2 className="text-3xl font-bold">My Auction History</h2>
-          <p className="text-gray-500 mt-1">
+        <div className="mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl font-bold">
+            My Auction History
+          </h2>
+          <p className="text-gray-500 text-sm sm:text-base mt-1">
             Track your selling and bidding activity
           </p>
         </div>
 
-        {/* Seller Section */}
+        {/* Sections */}
         <Section
           title="🏷️ Auctions I Created"
           subtitle="Manage your listings and buyer offers"
@@ -126,7 +149,6 @@ function AuctionHistory() {
           linkPrefix="/seller/auction"
         />
 
-        {/* Buyer Sections */}
         <Section
           title="🏆 Auctions I Won"
           subtitle="Auctions where you emerged as the highest bidder"
@@ -142,7 +164,6 @@ function AuctionHistory() {
           badgeColor="bg-purple-100 text-purple-700"
           linkPrefix="/auction"
         />
-
       </div>
     </div>
   );

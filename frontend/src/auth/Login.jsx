@@ -2,12 +2,12 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../api/api";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
-  const [error, setError] = useState("");
   const [step, setStep] = useState("LOGIN"); // LOGIN | OTP
   const [loading, setLoading] = useState(false);
 
@@ -15,39 +15,65 @@ function Login() {
   const navigate = useNavigate();
 
   /* ================= STEP 1: EMAIL + PASSWORD ================= */
-
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+
+    const toastId = toast.loading("Sending OTP... ");
 
     try {
       await API.post("/auth/login", { email, password });
-      setStep("OTP"); // move to OTP screen
+
+      toast.update(toastId, {
+        render: "OTP sent successfully ",
+        type: "success",
+        isLoading: false,
+        autoClose: 2500,
+      });
+
+      setStep("OTP");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      toast.update(toastId, {
+        render: err.response?.data?.message || "Login failed",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   /* ================= STEP 2: OTP VERIFY ================= */
-
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+
+    const toastId = toast.loading("Verifying OTP... ");
 
     try {
       const res = await API.post("/auth/verify-login-otp", {
         email,
-        otp
+        otp,
       });
 
-      login(res.data); // store token + user
-      navigate("/");
+      login(res.data);
+
+      toast.update(toastId, {
+        render: "Login successful ",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      navigate("/auctions");
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid OTP");
+      toast.update(toastId, {
+        render: err.response?.data?.message || "Invalid OTP",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -56,113 +82,138 @@ function Login() {
   return (
     <div className="min-h-screen flex">
 
-      {/* LEFT SECTION */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white px-16 py-20 flex-col justify-center items-center relative overflow-hidden text-center">
+      {/* LEFT – DESKTOP ONLY */}
+{/* LEFT – DESKTOP ONLY */}
+<div className="hidden md:flex w-1/2 bg-slate-900 text-white px-20 py-20 flex-col justify-center">
 
-        <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-500 opacity-20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-500 opacity-20 rounded-full blur-3xl"></div>
+  {/* Branding */}
+  <h1 className="text-5xl font-extrabold mb-4 tracking-tight">
+    UniTrade
+  </h1>
 
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          UniBid
-        </h1>
+  <p className="text-lg text-slate-300 mb-12 max-w-md">
+    A campus-exclusive marketplace where students buy, sell, and bid
+    securely — all in real time.
+  </p>
 
-        <p className="text-xl text-slate-300 mb-10 max-w-md">
-          A smart marketplace built exclusively for campus trading & real-time auctions.
-        </p>
+  {/* HOW IT WORKS */}
+  <div className="space-y-8 max-w-md">
 
-        <div className="space-y-4 text-slate-200 text-lg">
-          <p>⚡ Live bidding with instant updates</p>
-          <p>🤖 AI-assisted price suggestions</p>
-          <p>🔒 Secure student-only access</p>
-          <p>📊 Analytics & smart insights</p>
-        </div>
+    <div className="flex gap-4 items-start">
+      <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+        1
       </div>
+      <div>
+        <h3 className="font-semibold text-lg">Login securely</h3>
+        <p className="text-slate-400 text-sm">
+          Sign in using your college email and password.
+          We verify access with OTP for extra security.
+        </p>
+      </div>
+    </div>
 
-      {/* RIGHT SECTION */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-slate-100 px-6">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-10">
+    <div className="flex gap-4 items-start">
+      <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+        2
+      </div>
+      <div>
+        <h3 className="font-semibold text-lg">Bid or list items</h3>
+        <p className="text-slate-400 text-sm">
+          Participate in live auctions or list your own items
+          in seconds — books, gadgets, cycles, and more.
+        </p>
+      </div>
+    </div>
 
-          <h2 className="text-3xl font-bold text-center mb-2">
-            {step === "LOGIN" ? "Welcome Back 👋" : "Verify OTP 🔐"}
+    <div className="flex gap-4 items-start">
+      <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+        3
+      </div>
+      <div>
+        <h3 className="font-semibold text-lg">Close deals on campus</h3>
+        <p className="text-slate-400 text-sm">
+          The highest bid wins. Meet safely on campus
+          and complete the exchange.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+      {/* RIGHT */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-slate-100 px-4">
+      
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <Link
+          to="/"
+          className="absolute top-6 left-6 text-sm text-slate-600 hover:text-blue-600 font-medium"
+        >
+          ← Home
+        </Link>
+
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-1">
+            {step === "LOGIN" ? "Welcome Back " : "Verify OTP "}
           </h2>
 
-          <p className="text-gray-500 text-center mb-8">
+          <p className="text-gray-500 text-sm sm:text-base text-center mb-6">
             {step === "LOGIN"
               ? "Login to continue bidding smarter"
               : `OTP sent to ${email}`}
           </p>
 
-          {error && (
-            <p className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">
-              {error}
-            </p>
-          )}
-
-          {/* ================= LOGIN FORM ================= */}
+          {/* LOGIN FORM */}
           {step === "LOGIN" && (
-            <form onSubmit={handleLoginSubmit} className="space-y-5">
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <input
+                type="email"
+                inputMode="email"
+                placeholder="rollno@college.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full border rounded-xl px-4 py-3 text-base"
+              />
 
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="rollno@nitkkr.ac.in"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full border rounded-xl px-4 py-3 text-base"
+              />
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl"
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
               >
                 {loading ? "Sending OTP..." : "Login"}
               </button>
             </form>
           )}
 
-          {/* ================= OTP FORM ================= */}
+          {/* OTP FORM */}
           {step === "OTP" && (
-            <form onSubmit={handleOTPSubmit} className="space-y-5">
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">
-                  Enter OTP
-                </label>
-                <input
-                  type="text"
-                  placeholder="6-digit OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                  maxLength={6}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
+            <form onSubmit={handleOTPSubmit} className="space-y-4">
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="6-digit OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength={6}
+                required
+                className="w-full border rounded-xl px-4 py-3 text-center tracking-widest text-lg"
+              />
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl"
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
               >
                 {loading ? "Verifying..." : "Verify OTP"}
               </button>
@@ -180,12 +231,14 @@ function Login() {
           {step === "LOGIN" && (
             <p className="text-sm text-center mt-6 text-gray-600">
               New here?{" "}
-              <Link to="/signup" className="text-blue-600 hover:underline font-medium">
+              <Link
+                to="/signup"
+                className="text-blue-600 hover:underline font-medium"
+              >
                 Create an account
               </Link>
             </p>
           )}
-
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import API from "../api/api";
 import socket from "../api/socket";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 /* ================= BID INCREMENT LOGIC ================= */
 function getBidIncrement(price) {
@@ -20,7 +21,6 @@ function AuctionDetail() {
   const [bids, setBids] = useState([]);
   const [myOffer, setMyOffer] = useState(null);
   const [offerAmount, setOfferAmount] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -38,7 +38,7 @@ function AuctionDetail() {
         const o = await API.get(`/offers/${id}/my`);
         setMyOffer(o.data.offer || null);
       } catch {
-        setError("Failed to load auction");
+        toast.error("Failed to load auction");
       } finally {
         setLoading(false);
       }
@@ -49,162 +49,152 @@ function AuctionDetail() {
 
   /* ================= SOCKET ================= */
   useEffect(() => {
-    socket.connect();
+    if (!id) return;
+
+    if (!socket.connected) socket.connect();
     socket.emit("joinAuction", id);
 
-    socket.on("newBid", (data) => {
-      if (data.auctionId === id) {
-        setAuction((prev) => ({
-          ...prev,
-          current_price: data.bid_amount
-        }));
+    const onNewBid = (data) => {
+      if (data.auctionId !== id) return;
 
-        setBids((prev) => [
-          {
-            _id: Date.now(),
-            bidder_id: { name: data.bidder.name },
-            bid_amount: data.bid_amount
-          },
-          ...prev
-        ]);
-      }
-    });
+      setAuction((prev) => ({
+        ...prev,
+        current_price: data.bid_amount
+      }));
 
-    socket.on("auctionEnded", (data) => {
-      if (data.auctionId === id) {
-        setAuction((prev) => ({
-          ...prev,
-          status: "CLOSED",
-          winner_id: {
-            _id: data.winner_id,
-            name: data.winner_name
+      setBids((prev) => [
+        {
+          _id: Date.now(),
+          bidder_id: {
+            _id: data.bidder.id,
+            name: data.bidder.name
           },
-          final_price: data.final_price,
-          final_method: data.method
-        }));
+          bid_amount: data.bid_amount
+        },
+        ...prev
+      ]);
+
+      if (data.bidder.id !== user?._id) {
+        toast.info(`🔔 ${data.bidder.name} bid ₹${data.bid_amount}`, {
+          autoClose: 2500
+        });
       }
-    });
+    };
+
+    socket.on("newBid", onNewBid);
 
     return () => {
-      socket.off("newBid");
-      socket.off("auctionEnded");
+      socket.emit("leaveAuction", id);
+      socket.off("newBid", onNewBid);
     };
-  }, [id]);
-  // useEffect(() => {
-  //   if (!id) return;
-  
-  //   socket.emit("joinAuction", id);
-  //   console.log("📢 joinAuction:", id);
-  
-  //   const onNewBid = (data) => {
-  //     if (data.auctionId !== id) return;
-  
-  //     setAuction((prev) => ({
-  //       ...prev,
-  //       current_price: data.bid_amount
-  //     }));
-  
-  //     setBids((prev) => [
-  //       {
-  //         _id: Date.now(),
-  //         bidder_id: data.bidder.id,
-  //         bid_amount: data.bid_amount
-  //       },
-  //       ...prev
-  //     ]);
-  //   };
-  
-  //   socket.on("newBid", onNewBid);
-  
-  //   return () => {
-  //     socket.emit("leaveAuction", id);
-  //     socket.off("newBid", onNewBid);
-  //     console.log("🚪 leaveAuction:", id);
-  //   };
-  // }, [id]);
-  
-  
-  
+  }, [id, user?._id]);
 
   /* ================= BID LOGIC ================= */
+  const isFirstBid = bids.length === 0;
+  const lastBid = bids[0];
+  const isMyLastBid =
+    !isFirstBid && lastBid?.bidder_id?._id === user?._id;
 
-  // ✅ Correct first-bid detection
- /* ================= BID LOGIC ================= */
-
-const isFirstBid = bids.length === 0;
-
-const lastBid = bids[0];
-
-const isMyLastBid =
-  !isFirstBid &&
-  lastBid?.bidder_id === user?._id;
-
-const increment = getBidIncrement(auction?.current_price || 0);
-
-const nextBid = isFirstBid
-  ? auction?.base_price
-  : auction?.current_price + increment;
-
+  const increment = getBidIncrement(auction?.current_price || 0);
+  const nextBid = isFirstBid
+    ? auction?.base_price
+    : auction?.current_price + increment;
 
   const handleBid = async () => {
+    const toastId = toast.loading("Placing bid...");
+
     try {
       await API.post("/bids/place", {
         auctionId: id,
         bid_amount: nextBid
       });
 
-      // ✅ Optimistic UI update
-      setAuction((prev) => ({
-        ...prev,
-        current_price: nextBid
-      }));
-
-      setBids((prev) => [
-        {
-          _id: Date.now(),
-          bidder_id: user._id,
-          bid_amount: nextBid
-        },
-        ...prev
-      ]);
+      toast.update(toastId, {
+        render: `Bid placed at ₹${nextBid}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 2000
+      });
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to place bid");
+      toast.update(toastId, {
+        render: "Failed to place bid",
+        type: "error",
+        isLoading: false
+      });
     }
   };
 
-  /* ================= OFFER LOGIC ================= */
+  /* ================= OFFER ================= */
   const canPlaceOffer = !myOffer || myOffer.status === "REJECTED";
 
   const handleOffer = async (e) => {
     e.preventDefault();
-    await API.post("/offers", {
-      auctionId: id,
-      offer_price: Number(offerAmount)
-    });
-    setMyOffer({ status: "PENDING", offer_price: offerAmount });
-    setOfferAmount("");
+    const toastId = toast.loading("Sending offer...");
+
+    try {
+      await API.post("/offers", {
+        auctionId: id,
+        offer_price: Number(offerAmount)
+      });
+
+      toast.update(toastId, {
+        render: "Offer sent",
+        type: "success",
+        isLoading: false
+      });
+
+      setMyOffer({ status: "PENDING", offer_price: offerAmount });
+      setOfferAmount("");
+    } catch {
+      toast.update(toastId, {
+        render: "Offer failed",
+        type: "error",
+        isLoading: false
+      });
+    }
   };
 
   /* ================= UI STATES ================= */
   if (loading) return <p className="text-center mt-20">Loading…</p>;
-  if (error) return <p className="text-center text-red-600">{error}</p>;
   if (!auction) return <p className="text-center">Auction not found</p>;
 
   const hasBids = auction.current_price > auction.base_price;
 
   return (
-    <div className="bg-slate-100 min-h-screen py-10 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div className="bg-slate-100 min-h-screen pb-28 sm:pb-10 px-4 sm:px-6 pt-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
 
         {/* LEFT */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow p-6">
-          <img
-            src={selectedImage}
-            alt=""
-            className="w-full h-[420px] object-contain rounded-xl bg-slate-50"
-          />
-          <h1 className="text-3xl font-bold mt-6">{auction.title}</h1>
-          <p className="text-gray-600 mt-2">{auction.description}</p>
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow p-4 sm:p-8">
+
+          {/* IMAGE */}
+          <div className="bg-slate-100 rounded-xl p-4">
+            <img
+              src={selectedImage}
+              alt="Auction Item"
+              className="w-full h-[260px] sm:h-[420px] object-contain rounded-lg"
+            />
+          </div>
+
+          {/* STATUS */}
+          <div className="flex items-center gap-3 mt-4">
+            {auction.status === "ACTIVE" && (
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-red-500 text-white animate-pulse">
+                LIVE
+              </span>
+            )}
+            <span className="text-sm text-gray-500">
+              {bids.length} bids placed
+            </span>
+          </div>
+
+          <h1 className="text-2xl sm:text-4xl font-bold mt-4">
+            {auction.title}
+          </h1>
+
+          <p className="text-gray-600 mt-3 leading-relaxed">
+            {auction.description}
+          </p>
         </div>
 
         {/* RIGHT */}
@@ -213,56 +203,22 @@ const nextBid = isFirstBid
           {/* PRICE */}
           <div className="bg-white rounded-2xl shadow p-6">
             <p className="text-sm text-gray-500">Base Price</p>
-            <p className="text-xl font-semibold">₹{auction.base_price}</p>
+            <p className="text-lg font-semibold">₹{auction.base_price}</p>
 
             <div className="mt-4">
               <p className="text-sm text-gray-500">
-                {hasBids ? "Highest Bid" : "Current Status"}
+                {hasBids ? "Highest Bid" : "Status"}
               </p>
-              <p className="text-4xl font-bold text-blue-600">
+              <p className="text-4xl font-extrabold text-blue-600">
                 {hasBids ? `₹${auction.current_price}` : "No bids yet"}
               </p>
             </div>
           </div>
 
-          {/* BID */}
+          {/* OFFER (DESKTOP) */}
           {auction.status === "ACTIVE" && (
-            <div className="bg-white rounded-2xl shadow p-6">
-              <h3 className="text-lg font-semibold mb-3">Place a Bid</h3>
-
-              <button
-                disabled={isMyLastBid}
-                onClick={handleBid}
-                className={`w-full py-4 rounded-xl text-lg font-bold ${
-                  isMyLastBid
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700 text-white"
-                }`}
-              >
-                {isMyLastBid
-                  ? "You placed the last bid"
-                  : `Bid ₹${nextBid}`}
-              </button>
-
-              {!isFirstBid && (
-                <p className="text-sm text-gray-500 mt-2 text-center">
-                  Increment ₹{increment}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* OFFER */}
-          {auction.status === "ACTIVE" && (
-            <div className="bg-white rounded-2xl shadow p-6">
-              <h3 className="text-lg font-semibold mb-3">Make an Offer</h3>
-
-              {myOffer && (
-                <p className="text-sm mb-3">
-                  Your offer ₹{myOffer.offer_price} —{" "}
-                  <span className="font-semibold">{myOffer.status}</span>
-                </p>
-              )}
+            <div className="hidden sm:block bg-white rounded-2xl shadow p-6">
+              <h3 className="text-lg font-semibold mb-4">Make an Offer</h3>
 
               <form onSubmit={handleOffer} className="flex gap-3">
                 <input
@@ -270,8 +226,8 @@ const nextBid = isFirstBid
                   disabled={!canPlaceOffer}
                   value={offerAmount}
                   onChange={(e) => setOfferAmount(e.target.value)}
-                  placeholder="Below base price"
                   className="flex-1 border rounded-lg px-4 py-3"
+                  placeholder="Below base price"
                 />
                 <button
                   disabled={!canPlaceOffer}
@@ -286,9 +242,27 @@ const nextBid = isFirstBid
               </form>
             </div>
           )}
-
         </div>
       </div>
+
+      {/* ================= MOBILE STICKY BID CTA ================= */}
+      {auction.status === "ACTIVE" && (
+        <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg p-4 sm:hidden">
+          <button
+            disabled={isMyLastBid}
+            onClick={handleBid}
+            className={`w-full h-12 rounded-xl font-bold text-lg ${
+              isMyLastBid
+                ? "bg-gray-300"
+                : "bg-blue-600 text-white"
+            }`}
+          >
+            {isMyLastBid
+              ? "You placed last bid"
+              : `Bid ₹${nextBid}`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

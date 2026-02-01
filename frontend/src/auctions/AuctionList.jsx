@@ -10,7 +10,7 @@ const CATEGORIES = [
   "Clothing & Accessories",
   "Electronics & Gadgets",
   "Books & Study",
-  "Miscellaneous"
+  "Miscellaneous",
 ];
 
 function AuctionList() {
@@ -33,7 +33,13 @@ function AuctionList() {
     fetchAuctions();
   }, []);
 
-  if (loading) return <p className="p-6">Loading auctions...</p>;
+  if (loading) {
+    return (
+      <p className="p-6 text-center text-gray-500">
+        Loading auctions...
+      </p>
+    );
+  }
 
   /* ================= FILTER LOGIC ================= */
   const filteredAuctions =
@@ -44,30 +50,31 @@ function AuctionList() {
         );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
 
-      {/* Header Section */}
+      {/* ================= HERO ================= */}
       <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Active Auctions
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-10">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900">
+            Live Campus Listings
           </h2>
-          <p className="text-gray-600 mt-1">
-            Browse through the latest items up for auction on campus
+          <p className="text-sm sm:text-base text-gray-600 mt-2 max-w-2xl">
+            Discover trending items, place bids in real-time, and grab the best
+            campus deals.
           </p>
         </div>
 
-        {/* ===== CATEGORY FILTER BAR ===== */}
-        <div className="border-t">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex gap-3 overflow-x-auto">
+        {/* ================= CATEGORY FILTER ================= */}
+        <div className="border-t sticky top-[64px] bg-white z-20">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition
+                className={`whitespace-nowrap px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition
                   ${
                     selectedCategory === category
-                      ? "bg-blue-600 text-white"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow scale-105"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >
@@ -78,16 +85,26 @@ function AuctionList() {
         </div>
       </div>
 
-      {/* Auction Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      {/* ================= AUCTION GRID ================= */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {filteredAuctions.length === 0 ? (
-          <p className="text-gray-500">
-            No auctions found for this category.
-          </p>
+          <div className="bg-white rounded-xl shadow p-6 sm:p-10 text-center">
+            <p className="text-gray-500 text-base sm:text-lg">
+              No auctions found in this category 😕
+            </p>
+            <p className="text-sm text-gray-400 mt-2">
+              Try switching categories or check back later.
+            </p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredAuctions.map((auction) => (
-              <AuctionCard key={auction._id} auction={auction} />
+              <div
+                key={auction._id}
+                className="transition-transform sm:hover:-translate-y-1"
+              >
+                <AuctionCard auction={auction} />
+              </div>
             ))}
           </div>
         )}

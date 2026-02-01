@@ -7,16 +7,26 @@ const notificationSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
+
     type: {
       type: String,
-      enum: ["OUTBID", "OFFER", "AUCTION", "SYSTEM"],
+      enum: [
+        "OUTBID",
+        "NEW_OFFER",        // ✅ ADD THIS
+        "OFFER_ACCEPTED",
+        "OFFER_REJECTED",
+        "AUCTION_WON",
+        "AUCTION_ENDED"
+      ],
       required: true
     },
+
     message: {
       type: String,
       required: true
     },
-    read: {
+
+    is_read: {
       type: Boolean,
       default: false
     }
