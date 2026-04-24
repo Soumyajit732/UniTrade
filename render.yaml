@@ -1,39 +1,23 @@
 services:
-  # ── 1. Frontend (React / Vite) ─────────────────────────────────────────────
-  - type: web
-    name: unitrade-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        sync: false          # set manually in Render dashboard
-      - key: VITE_SOCKET_URL
-        sync: false
-
-  # ── 2. Backend (Node / Express) ───────────────────────────────────────────
+  # Backend + AI in one Docker container (free tier friendly)
   - type: web
     name: unitrade-backend
-    runtime: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    runtime: docker
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 5000
+      - key: START_AI_PRICE_SERVICE
+        value: "false"                 # AI is started by start.sh, not Node
+      - key: AI_PRICE_SERVICE_URL
+        value: "http://127.0.0.1:8001/ai/predict-price"
       - key: MONGO_URI
-        sync: false          # paste your MongoDB Atlas URI
+        sync: false                    # set in Render dashboard
       - key: JWT_SECRET
         sync: false
       - key: CLIENT_URL
-        sync: false          # https://unitrade-frontend.onrender.com
-      - key: AI_PRICE_SERVICE_URL
-        sync: false          # https://unitrade-ai.onrender.com/ai/predict-price
-      - key: START_AI_PRICE_SERVICE
-        value: "false"       # Render runs AI as a separate service
+        sync: false                    # your Vercel frontend URL
       - key: OPENAI_API_KEY
         sync: false
       - key: CLOUDINARY_CLOUD_NAME
@@ -42,14 +26,3 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
-
-  # ── 3. AI Price Service (Python / FastAPI) ────────────────────────────────
-  - type: web
-    name: unitrade-ai
-    runtime: python
-    rootDir: .
-    buildCommand: pip install -r ai/requirements.txt
-    startCommand: uvicorn ai.ai_price_api:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: PORT
-        value: 8001
