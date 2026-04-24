@@ -60,8 +60,19 @@ const auctionSchema = new mongoose.Schema(
     final_price: {
       type: Number,
       default: null
+    },
+
+    transaction_status: {
+      type: String,
+      enum: ["PENDING_CONTACT", "COMPLETED", "FAILED"],
+      default: null
+    },
+
+    reminder_sent: {
+      type: Boolean,
+      default: false
     }
-    
+
   },
   {
     timestamps: true

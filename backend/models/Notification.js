@@ -8,22 +8,33 @@ const notificationSchema = new mongoose.Schema(
       required: true
     },
 
+    auction_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Auction",
+      default: null
+    },
+
     type: {
       type: String,
       enum: [
         "OUTBID",
-        "NEW_OFFER",        // ✅ ADD THIS
+        "NEW_OFFER",
         "OFFER_ACCEPTED",
         "OFFER_REJECTED",
         "AUCTION_WON",
-        "AUCTION_ENDED"
+        "AUCTION_ENDED",
+        "TRANSACTION_COMPLETE",
+        "NO_SHOW_STRIKE",
+        "SECOND_CHANCE",
+        "PENDING_CONTACT_REMINDER"
       ],
       required: true
     },
 
     message: {
       type: String,
-      required: true
+      required: true,
+      trim: true
     },
 
     is_read: {
@@ -31,7 +42,12 @@ const notificationSchema = new mongoose.Schema(
       default: false
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
+
+/* Optional index for faster notification fetch */
+notificationSchema.index({ user_id: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Notification", notificationSchema);

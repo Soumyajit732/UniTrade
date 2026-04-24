@@ -2,320 +2,266 @@ import React, { useState } from "react";
 import API from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ArrowLeft, Sparkles, ImagePlus, X } from "lucide-react";
 
 function CreateAuction() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    category: "",
-    base_price: "",
-    end_time: ""
+    title: "", description: "", category: "",
+    original_price: "", product_age_value: "", product_age_unit: "months",
+    item_condition: "3", auction_duration_hours: "48", base_price: "", end_time: ""
   });
 
+  const [confidence, setConfidence] = useState(null);
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [descLoading, setDescLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+    setPreviews(files.map((f) => URL.createObjectURL(f)));
   };
 
-  /* ================= AI DESCRIPTION ================= */
+  const removeImage = (i) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== i));
+    setPreviews((prev) => prev.filter((_, idx) => idx !== i));
+  };
+
+  /* ── AI DESCRIPTION ─────────────────────────────── */
   const generateDescriptionWithAI = async () => {
-    if (!form.title || !form.category) {
-      toast.warn("Please enter title and category first");
+    if (!form.title || !form.category) { toast.warn("Please enter title and category first"); return; }
+    setDescLoading(true);
+    const toastId = toast.loading("Generating description…");
+    try {
+      const res = await API.post("/ai/generate-description", {
+        title: form.title,
+        category: form.category
+      });
+      setForm((p) => ({ ...p, description: res.data.description || "" }));
+      toast.update(toastId, { render: "Description generated", type: "success", isLoading: false, autoClose: 2000 });
+    } catch (err) {
+      toast.update(toastId, { render: err.response?.data?.message || "AI generation failed", type: "error", isLoading: false });
+    } finally {
+      setDescLoading(false);
+    }
+  };
+
+  /* ── AI PRICE ───────────────────────────────────── */
+  const suggestPriceWithAI = async () => {
+    if (!form.category || !form.original_price || !form.product_age_value || !form.auction_duration_hours) {
+      toast.warn("Fill in category, original price, product age and auction duration first", { autoClose: 3000 });
       return;
     }
-
     setAiLoading(true);
-    const toastId = toast.loading("Generating description...");
-
+    const toastId = toast.loading("Analyzing similar auctions…");
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You write short, clear product descriptions for campus auctions."
-              },
-              {
-                role: "user",
-                content: `
-Generate a concise product description.
-
-Title: ${form.title}
-Category: ${form.category}
-
-Tone: student-friendly, honest, trustworthy.
-Length: 3–4 lines.
-`
-              }
-            ],
-            temperature: 0.7
-          })
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "OpenAI error");
-      }
-
-      const description =
-        data.choices?.[0]?.message?.content || "";
-
-      setForm((prev) => ({
-        ...prev,
-        description
-      }));
-
-      toast.update(toastId, {
-        render: "AI description generated",
-        type: "success",
-        isLoading: false,
-        autoClose: 2000
+      const res = await API.post("/ai/predict-price", {
+        item_category: form.category,
+        original_price: Number(form.original_price),
+        product_age_value: Number(form.product_age_value),
+        product_age_unit: form.product_age_unit,
+        item_condition: Number(form.item_condition),
+        auction_duration_hours: Number(form.auction_duration_hours)
       });
+      setForm((p) => ({ ...p, base_price: res.data.recommended_base_price }));
+      setConfidence(res.data.confidence_score);
+      toast.update(toastId, { render: "AI price applied", type: "success", isLoading: false, autoClose: 2000 });
     } catch (err) {
       toast.update(toastId, {
-        render: err.message || "AI generation failed",
+        render: err.response?.data?.message || "AI pricing unavailable",
         type: "error",
         isLoading: false,
-        autoClose: 3000
+        autoClose: 3000,
+        closeOnClick: true
       });
     } finally {
       setAiLoading(false);
     }
   };
 
-  /* ================= SUBMIT ================= */
+  /* ── SUBMIT ─────────────────────────────────────── */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const toastId = toast.loading("Creating auction...");
-
+    const toastId = toast.loading("Creating auction…");
     try {
-      const formData = new FormData();
-      formData.append("title", form.title);
-      formData.append("description", form.description);
-      formData.append("category", form.category);
-      formData.append("base_price", Number(form.base_price));
-      formData.append(
-        "end_time",
-        new Date(form.end_time).toISOString()
-      );
-
-      images.forEach((img) => formData.append("images", img));
-
-      await API.post("/auctions/create", formData);
-
-      toast.update(toastId, {
-        render: "Auction created successfully",
-        type: "success",
-        isLoading: false,
-        autoClose: 2500
-      });
-
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      images.forEach((img) => fd.append("images", img));
+      await API.post("/auctions/create", fd);
+      toast.update(toastId, { render: "Auction created!", type: "success", isLoading: false, autoClose: 2500 });
       navigate("/");
     } catch (err) {
-      toast.update(toastId, {
-        render:
-          err.response?.data?.message ||
-          "Failed to create auction",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000
-      });
+      toast.update(toastId, { render: err.response?.data?.message || "Failed to create auction", type: "error", isLoading: false });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-10 flex justify-center relative">
+    <div className="min-h-screen bg-slate-50 px-4 py-8">
+      <div className="max-w-2xl mx-auto">
 
-      {/* HOME */}
-      <Link
-        to="/"
-        className="absolute top-6 left-6 text-sm text-slate-600 hover:text-blue-600 font-medium"
-      >
-        ← Home
-      </Link>
-
-      <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-
-        <h2 className="text-3xl font-bold text-center mb-4">
-          Create New Auction
-        </h2>
-
-        {/* TIPS */}
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 text-sm text-slate-600">
-          <p className="font-semibold text-slate-800 mb-1">
-            Tips for better auctions
-          </p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Upload clear images from multiple angles</li>
-            <li>Set a realistic base price</li>
-            <li>Choose an end time a few hours ahead</li>
-            <li>You can use AI to generate a description</li>
-          </ul>
+        <div className="mb-6">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors mb-4">
+            <ArrowLeft size={15} /> Back
+          </Link>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Create New Auction</h1>
+          <p className="text-slate-500 text-sm mt-1">List an item and let students bid in real time</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* TITLE */}
-          <div>
-            <label className="text-sm font-semibold text-slate-700">
-              Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              required
-              className="w-full h-12 border rounded-xl px-4"
-            />
-          </div>
+          {/* ── SECTION: BASIC INFO ─────────────────── */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Basic Info</h2>
 
-          {/* CATEGORY */}
-          <div>
-            <label className="text-sm font-semibold text-slate-700">
-              Category
-            </label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              required
-              className="w-full h-12 border rounded-xl px-4"
-            >
-              <option value="">Select</option>
-              <option value="Books & Study">Books & Study</option>
-              <option value="Electronics & Gadgets">Electronics & Gadgets</option>
-              <option value="Hostel Essentials">Hostel Essentials</option>
-              <option value="Clothing & Accessories">Clothing & Accessories</option>
-              <option value="Kitchen & Food Items">Kitchen & Food Items</option>
-              <option value="Sports & Fitness">Sports & Fitness</option>
-              <option value="Transport & Mobility">Transport & Mobility</option>
-              <option value="Personal Care">Personal Care</option>
-              <option value="Miscellaneous">Miscellaneous</option>
-            </select>
-          </div>
-
-          {/* DESCRIPTION + AI */}
-          <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="text-sm font-semibold text-slate-700">
-                Description
-              </label>
-              <button
-                type="button"
-                onClick={generateDescriptionWithAI}
-                disabled={aiLoading}
-                className="text-sm text-blue-600 hover:underline disabled:opacity-50"
-              >
-                {aiLoading ? "Generating..." : "Generate with AI"}
-              </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Title <span className="text-red-400">*</span></label>
+                <input name="title" placeholder="e.g. Dell Laptop 8GB" value={form.title} onChange={handleChange} required className="input" />
+              </div>
+              <div>
+                <label className="label">Category <span className="text-red-400">*</span></label>
+                <select name="category" value={form.category} onChange={handleChange} required className="input">
+                  <option value="">Select category</option>
+                  {["Books & Study","Electronics & Gadgets","Hostel Essentials","Clothing & Accessories","Kitchen & Food Items","Sports & Fitness","Transport & Mobility","Personal Care","Miscellaneous"].map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={4}
-              required
-              className="w-full border rounded-xl px-4 py-3"
-            />
+            <div>
+              <label className="label">Description <span className="text-red-400">*</span></label>
+              <textarea
+                name="description"
+                placeholder="Describe condition, age, defects, reason for selling…"
+                value={form.description}
+                onChange={handleChange}
+                rows={4}
+                required
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder-slate-400 resize-none transition-colors"
+              />
+              <button type="button" onClick={generateDescriptionWithAI} disabled={descLoading} className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline transition-colors disabled:opacity-50">
+                <Sparkles size={12} />
+                {descLoading ? "Generating…" : "Generate with AI"}
+              </button>
+            </div>
           </div>
 
-          {/* IMAGES */}
-          <div>
-            <label className="text-sm font-semibold text-slate-700">
-              Product Images
+          {/* ── SECTION: AI PRICING ─────────────────── */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles size={16} className="text-blue-600" />
+              <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">AI Price Recommendation</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Original Price (₹) <span className="text-red-400">*</span></label>
+                <input type="number" name="original_price" placeholder="e.g. 25000" value={form.original_price} onChange={handleChange} required className="input" />
+              </div>
+              <div>
+                <label className="label">Condition</label>
+                <select name="item_condition" value={form.item_condition} onChange={handleChange} className="input">
+                  <option value="5">Like New</option>
+                  <option value="4">Very Good</option>
+                  <option value="3">Good</option>
+                  <option value="2">Used</option>
+                  <option value="1">Poor</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="label">Product Age</label>
+                <input type="number" name="product_age_value" placeholder="e.g. 6" value={form.product_age_value} onChange={handleChange} className="input" />
+              </div>
+              <div className="w-32">
+                <label className="label">Unit</label>
+                <select name="product_age_unit" value={form.product_age_unit} onChange={handleChange} className="input">
+                  <option value="months">Months</option>
+                  <option value="years">Years</option>
+                  <option value="semesters">Semesters</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="label">Auction Duration (hours)</label>
+              <input type="number" name="auction_duration_hours" min="12" max="168" placeholder="e.g. 48" value={form.auction_duration_hours} onChange={handleChange} className="input" />
+            </div>
+
+            <button type="button" onClick={suggestPriceWithAI} disabled={aiLoading} className="btn-primary w-full">
+              <Sparkles size={15} />
+              {aiLoading ? "Analyzing…" : "Suggest Base Price with AI"}
+            </button>
+
+            {confidence !== null && (
+              <div className="flex items-center justify-center gap-2 py-2 bg-blue-50 rounded-xl border border-blue-100 text-sm">
+                <span className="text-blue-600 font-semibold">AI Confidence:</span>
+                <span className="font-bold text-blue-800">{confidence}%</span>
+              </div>
+            )}
+          </div>
+
+          {/* ── SECTION: PRICING & TIMING ───────────── */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Pricing & Timing</h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label">Base Price (₹) <span className="text-red-400">*</span></label>
+                <input type="number" name="base_price" placeholder="Starting bid amount" value={form.base_price} onChange={handleChange} required className="input" />
+              </div>
+              <div>
+                <label className="label">Auction Ends At <span className="text-red-400">*</span></label>
+                <input type="datetime-local" name="end_time" value={form.end_time} onChange={handleChange} required className="input" />
+              </div>
+            </div>
+          </div>
+
+          {/* ── SECTION: IMAGES ─────────────────────── */}
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Photos</h2>
+
+            <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-8 cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-200">
+              <ImagePlus size={24} className="text-slate-400" />
+              <span className="text-sm font-medium text-slate-600">Click to upload images</span>
+              <span className="text-xs text-slate-400">JPG, PNG, WEBP • max 2 MB each</span>
+              <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" />
             </label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                setImages(files);
-                setPreviews(
-                  files.map((f) => URL.createObjectURL(f))
-                );
-              }}
-              className="w-full border rounded-xl px-4 py-3 bg-white"
-            />
 
             {previews.length > 0 && (
-              <div className="mt-3 grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                 {previews.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt="preview"
-                    className="h-24 w-full object-cover rounded-lg border"
-                  />
+                  <div key={i} className="relative group">
+                    <img src={src} alt="preview" className="h-20 w-full object-cover rounded-xl border border-slate-100" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* PRICE */}
-          <div>
-            <label className="text-sm font-semibold text-slate-700">
-              Base Price (₹)
-            </label>
-            <input
-              type="number"
-              name="base_price"
-              value={form.base_price}
-              onChange={handleChange}
-              required
-              className="w-full h-12 border rounded-xl px-4"
-            />
-          </div>
-
-          {/* END TIME */}
-          <div>
-            <label className="text-sm font-semibold text-slate-700">
-              End Time
-            </label>
-            <input
-              type="datetime-local"
-              name="end_time"
-              value={form.end_time}
-              onChange={handleChange}
-              required
-              className="w-full h-12 border rounded-xl px-4"
-            />
-          </div>
-
-          <hr className="my-4 border-slate-200" />
-
-          {/* SUBMIT */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold disabled:opacity-60"
-          >
-            {loading ? "Creating..." : "Create Auction"}
+          {/* ── SUBMIT ──────────────────────────────── */}
+          <button type="submit" disabled={loading} className="btn-primary w-full h-12 text-base">
+            {loading ? "Creating…" : "Create Auction"}
           </button>
-
         </form>
       </div>
     </div>

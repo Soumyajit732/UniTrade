@@ -42,13 +42,11 @@ exports.signup = async (req, res) => {
       otpExpiresAt: Date.now() + 5 * 60 * 1000
     });
 
-    // ✅ SEND OTP VIA EMAIL
     await sendOTPEmail(email, otp, "Signup Verification");
 
     res.status(201).json({
       message: "OTP sent to email. Please verify to complete signup"
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -91,20 +89,21 @@ exports.verifySignupOTP = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // 🔥 INCLUDE profilePic
     res.status(200).json({
       message: "Signup verified successfully",
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         roll_no: user.roll_no,
         branch: user.branch,
         year: user.year,
-        role: user.role
+        role: user.role,
+        profilePic: user.profilePic || null
       }
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -147,13 +146,11 @@ exports.login = async (req, res) => {
     user.otpExpiresAt = Date.now() + 5 * 60 * 1000;
     await user.save();
 
-    // ✅ SEND LOGIN OTP VIA EMAIL
     await sendOTPEmail(email, otp, "Login Verification");
 
     res.status(200).json({
       message: "OTP sent to email. Please verify to login"
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -195,20 +192,21 @@ exports.verifyLoginOTP = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // 🔥 INCLUDE profilePic HERE (MOST IMPORTANT)
     res.status(200).json({
       message: "Login successful",
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         roll_no: user.roll_no,
         branch: user.branch,
         year: user.year,
-        role: user.role
+        role: user.role,
+        profilePic: user.profilePic || null
       }
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({

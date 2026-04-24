@@ -4,10 +4,6 @@ import API from "../api/api";
 function SellerOffersMini({ auctionId }) {
   const [offers, setOffers] = useState([]);
 
-  useEffect(() => {
-    fetchOffers();
-  }, [auctionId]);
-
   const fetchOffers = async () => {
     try {
       const res = await API.get(`/offers/${auctionId}`);
@@ -16,6 +12,24 @@ function SellerOffersMini({ auctionId }) {
       console.error("Failed to load offers");
     }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    API.get(`/offers/${auctionId}`)
+      .then((res) => {
+        if (!cancelled) {
+          setOffers(res.data.offers || []);
+        }
+      })
+      .catch(() => {
+        console.error("Failed to load offers");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [auctionId]);
 
   const handleAccept = async (id) => {
     await API.post(`/offers/${id}/accept`);

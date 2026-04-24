@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "../api/api";
+import socket from "../api/socket";
 import { Link } from "react-router-dom";
+import { Tag, Trophy, Clock, ChevronRight } from "lucide-react";
+
+const TABS = [
+  { key: "created",     label: "Created",      icon: <Tag     size={15} />, color: "blue"   },
+  { key: "won",         label: "Won",           icon: <Trophy  size={15} />, color: "emerald"},
+  { key: "participated",label: "Participated",  icon: <Clock   size={15} />, color: "violet" },
+];
 
 function AuctionHistory() {
   const [created, setCreated] = useState([]);
@@ -8,162 +16,143 @@ function AuctionHistory() {
   const [participated, setParticipated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("created");
+
+  const fetchHistory = useCallback(async () => {
+    try {
+      const [c, w, p] = await Promise.all([
+        API.get("/auctions/my-created"),
+        API.get("/auctions/my-won"),
+        API.get("/auctions/my-participated"),
+      ]);
+      setCreated(c.data.auctions || []);
+      setWon(w.data.auctions || []);
+      setParticipated(p.data.auctions || []);
+    } catch {
+      setError("Failed to load auction history");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchHistory(); }, [fetchHistory]);
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const [createdRes, wonRes, participatedRes] = await Promise.all([
-          API.get("/auctions/my-created"),
-          API.get("/auctions/my-won"),
-          API.get("/auctions/my-participated"),
-        ]);
-
-        setCreated(createdRes.data.auctions || []);
-        setWon(wonRes.data.auctions || []);
-        setParticipated(participatedRes.data.auctions || []);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load auction history");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, []);
+    socket.on("auctionEnded", fetchHistory);
+    return () => socket.off("auctionEnded", fetchHistory);
+  }, [fetchHistory]);
 
   if (loading) {
     return (
-      <p className="text-center mt-16 text-gray-500">
-        Loading history…
-      </p>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-slate-500 text-sm">Loading history…</p>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <p className="text-red-600 text-center mt-16">
-        {error}
-      </p>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
     );
   }
 
-  /* ================= SECTION COMPONENT ================= */
-  const Section = ({ title, subtitle, auctions, badgeColor, linkPrefix }) => (
-    <div className="mb-12">
+  const data = { created, won, participated };
+  const linkPrefix = { created: "/seller/auction", won: "/auction", participated: "/auction" };
+
+  const currentData = data[activeTab];
+  const currentTab = TABS.find((t) => t.key === activeTab);
+
+  const counts = { created: created.length, won: won.length, participated: participated.length };
+
+  return (
+    <div className="min-h-screen bg-slate-50">
 
       {/* Header */}
-      <div className="flex items-start gap-3 mb-5">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}`}
-        >
-          {title.split(" ")[0]}
-        </span>
-        <div>
-          <h3 className="text-lg sm:text-xl font-bold leading-tight">
-            {title.substring(2)}
-          </h3>
-          {subtitle && (
-            <p className="text-sm text-gray-500 mt-0.5">
-              {subtitle}
-            </p>
-          )}
+      <div className="bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">My Auction History</h1>
+          <p className="text-slate-500 text-sm mt-1">Track your selling and bidding activity</p>
+
+          {/* Tabs */}
+          <div className="flex gap-2 mt-6 overflow-x-auto scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200 whitespace-nowrap ${
+                  activeTab === tab.key
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-sm"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600"
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+                <span className={`px-1.5 py-0.5 text-xs rounded-full font-bold ${
+                  activeTab === tab.key ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
+                }`}>
+                  {counts[tab.key]}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Content */}
-      {auctions.length === 0 ? (
-        <div className="bg-white rounded-xl border p-5 text-gray-500 text-sm">
-          No auctions found.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {auctions.map((auction) => (
-            <Link
-              key={auction._id}
-              to={`${linkPrefix}/${auction._id}`}
-              className="block"
-            >
-              <div className="bg-white rounded-xl border shadow-sm p-4 h-full flex flex-col justify-between transition sm:hover:shadow-md sm:hover:border-blue-400">
-
-                {/* Title */}
-                <h4 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">
-                  {auction.title}
-                </h4>
-
-                {/* Meta */}
-                <div className="space-y-1 text-sm">
-                  <p className="text-gray-500">
-                    Status:{" "}
-                    <span
-                      className={`font-semibold ${
-                        auction.status === "CLOSED"
-                          ? "text-gray-600"
-                          : "text-green-600"
-                      }`}
-                    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        {currentData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-2xl mb-4">
+              {currentTab?.icon}
+            </div>
+            <p className="text-slate-700 font-semibold text-lg">No auctions here yet</p>
+            <p className="text-slate-400 text-sm mt-1">
+              {activeTab === "created" && "List your first item to get started"}
+              {activeTab === "won" && "Win an auction to see it here"}
+              {activeTab === "participated" && "Place a bid on any auction to see it here"}
+            </p>
+            {activeTab === "created" && (
+              <Link to="/create-auction" className="mt-4 btn-primary">Create Auction</Link>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentData.map((auction) => (
+              <Link key={auction._id} to={`${linkPrefix[activeTab]}/${auction._id}`} className="block group">
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col gap-3 hover:shadow-md hover:border-slate-200 transition-all duration-200">
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="text-base font-semibold text-slate-900 line-clamp-2 leading-snug">
+                      {auction.title}
+                    </h4>
+                    <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-semibold border ${
+                      auction.status === "ACTIVE"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-slate-100 text-slate-600 border-slate-200"
+                    }`}>
                       {auction.status}
                     </span>
-                  </p>
+                  </div>
 
-                  <p className="text-gray-700">
-                    Price:{" "}
-                    <span className="font-semibold">
-                      ₹{auction.final_price || auction.current_price}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500">Final / Current</span>
+                    <span className="font-bold text-slate-900">
+                      ₹{auction.final_price || auction.current_price || auction.base_price}
                     </span>
-                  </p>
+                  </div>
+
+                  <div className="flex items-center text-xs text-blue-600 font-semibold group-hover:gap-2 transition-all">
+                    View Details <ChevronRight size={13} className="ml-1" />
+                  </div>
                 </div>
-
-                {/* CTA */}
-                <div className="mt-4 text-sm font-medium text-blue-600">
-                  View Details →
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-slate-100 px-4 py-8 sm:py-12 flex justify-center">
-      <div className="w-full max-w-7xl">
-
-        {/* Page Header */}
-        <div className="mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold">
-            My Auction History
-          </h2>
-          <p className="text-gray-500 text-sm sm:text-base mt-1">
-            Track your selling and bidding activity
-          </p>
-        </div>
-
-        {/* Sections */}
-        <Section
-          title="🏷️ Auctions I Created"
-          subtitle="Manage your listings and buyer offers"
-          auctions={created}
-          badgeColor="bg-blue-100 text-blue-700"
-          linkPrefix="/seller/auction"
-        />
-
-        <Section
-          title="🏆 Auctions I Won"
-          subtitle="Auctions where you emerged as the highest bidder"
-          auctions={won}
-          badgeColor="bg-green-100 text-green-700"
-          linkPrefix="/auction"
-        />
-
-        <Section
-          title="🕒 Auctions I Participated In"
-          subtitle="Auctions you placed bids or offers on"
-          auctions={participated}
-          badgeColor="bg-purple-100 text-purple-700"
-          linkPrefix="/auction"
-        />
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

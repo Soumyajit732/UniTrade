@@ -14,13 +14,17 @@ import AuctionDetail from "./auctions/AuctionDetail";
 import CreateAuction from "./auctions/CreateAuction";
 import AuctionHistory from "./auctions/AuctionHistory";
 import SellerAuctionDashboard from "./auctions/SellerAuctionDashboard";
+import Profile from "./pages/Profile";
+
+
+
 
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
 import socket from "./api/socket";
-import { AuthContext } from "./context/AuthContext";
+import { AuthContext } from "./context/auth-context";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -128,6 +132,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SellerAuctionDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

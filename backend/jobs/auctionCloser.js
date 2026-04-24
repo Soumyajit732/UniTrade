@@ -7,6 +7,42 @@ const User = require("../models/User");
 const { sendNotification } = require("../services/notification.service");
 
 const startAuctionCloser = (io) => {
+  // Runs every hour — sends 48h contact reminder for unresolved transactions
+  cron.schedule("0 * * * *", async () => {
+    try {
+      if (mongoose.connection.readyState !== 1) return;
+
+      const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000);
+
+      const staleAuctions = await Auction.find({
+        status: "CLOSED",
+        transaction_status: "PENDING_CONTACT",
+        reminder_sent: false,
+        end_time: { $lte: cutoff }
+      });
+
+      for (const auction of staleAuctions) {
+        await sendNotification(
+          io,
+          auction.winner_id,
+          "PENDING_CONTACT_REMINDER",
+          `Reminder: You won "${auction.title}" 48 hours ago. Please contact the seller to complete your purchase.`
+        );
+        await sendNotification(
+          io,
+          auction.seller_id,
+          "PENDING_CONTACT_REMINDER",
+          `Reminder: Your auction "${auction.title}" closed 48 hours ago. The winner has not yet been in contact.`
+        );
+
+        auction.reminder_sent = true;
+        await auction.save();
+      }
+    } catch (error) {
+      console.error("48h reminder error:", error.message);
+    }
+  });
+
   // Runs every 5 minutes (Atlas-safe)
   cron.schedule("*/5 * * * *", async () => {
     try {
@@ -32,13 +68,14 @@ const startAuctionCloser = (io) => {
         if (highestBid) {
           auction.winner_id = highestBid.bidder_id;
           auction.final_price = highestBid.bid_amount;
+          auction.transaction_status = "PENDING_CONTACT";
 
           // 🔔 Notify winner
           await sendNotification(
             io,
             highestBid.bidder_id,
-            "WIN",
-            `🎉 You won the auction "${auction.title}" for ₹${highestBid.bid_amount}`
+            "AUCTION_WON",
+            `🎉 You won the auction "${auction.title}" for ₹${highestBid.bid_amount}. Please contact the seller to complete the transaction.`
           );
         }
 
@@ -46,7 +83,7 @@ const startAuctionCloser = (io) => {
         await sendNotification(
           io,
           auction.seller_id,
-          "AUCTION_END",
+          "AUCTION_ENDED",
           `Your auction "${auction.title}" has ended`
         );
 

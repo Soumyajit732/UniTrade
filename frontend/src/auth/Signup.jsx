@@ -2,89 +2,42 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../api/api";
 import { toast } from "react-toastify";
+import { Gavel, ShieldCheck, Bell, Zap } from "lucide-react";
 
 function Signup() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    roll_no: "",
-    branch: "",
-    year: "",
-    phone: ""
-  });
-
+  const [form, setForm] = useState({ name: "", email: "", password: "", roll_no: "", branch: "", year: "", phone: "" });
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("FORM"); // FORM | OTP
+  const [step, setStep] = useState("FORM");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  /* ================= STEP 1: SIGNUP ================= */
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const toastId = toast.loading("Creating account... 📩");
-
+    const toastId = toast.loading("Creating account…");
     try {
       await API.post("/auth/signup", form);
-
-      toast.update(toastId, {
-        render: "OTP sent to your email 🔐",
-        type: "success",
-        isLoading: false,
-        autoClose: 2500
-      });
-
+      toast.update(toastId, { render: "OTP sent to your email", type: "success", isLoading: false, autoClose: 2500 });
       setStep("OTP");
     } catch (err) {
-      toast.update(toastId, {
-        render: err.response?.data?.message || "Signup failed",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000
-      });
+      toast.update(toastId, { render: err.response?.data?.message || "Signup failed", type: "error", isLoading: false, autoClose: 3000 });
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= STEP 2: VERIFY OTP ================= */
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const toastId = toast.loading("Verifying OTP... 🔍");
-
+    const toastId = toast.loading("Verifying OTP…");
     try {
-      await API.post("/auth/verify-signup-otp", {
-        email: form.email,
-        otp
-      });
-
-      toast.update(toastId, {
-        render: "Account verified! Please login 🎉",
-        type: "success",
-        isLoading: false,
-        autoClose: 2500
-      });
-
+      await API.post("/auth/verify-signup-otp", { email: form.email, otp });
+      toast.update(toastId, { render: "Account verified! Please login", type: "success", isLoading: false, autoClose: 2500 });
       navigate("/login");
     } catch (err) {
-      toast.update(toastId, {
-        render: err.response?.data?.message || "Invalid OTP",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000
-      });
+      toast.update(toastId, { render: err.response?.data?.message || "Invalid OTP", type: "error", isLoading: false, autoClose: 3000 });
     } finally {
       setLoading(false);
     }
@@ -93,231 +46,138 @@ function Signup() {
   return (
     <div className="min-h-screen flex">
 
-      {/* LEFT – DESKTOP ONLY */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white px-16 py-20 flex-col justify-center">
+      {/* ── LEFT PANEL ───────────────────────────────────── */}
+      <div className="hidden md:flex w-1/2 relative bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white px-16 py-20 flex-col justify-center overflow-hidden">
+        <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
 
-{/* Brand */}
-<h1 className="text-5xl font-extrabold mb-4 tracking-tight">
-  UniTrade
-</h1>
+        <div className="relative z-10">
+          <Link to="/" className="text-2xl font-extrabold gradient-text tracking-tight mb-10 block">UniTrade</Link>
 
-<p className="text-lg text-slate-300 max-w-md mb-12">
-  A campus-exclusive marketplace designed for secure trading
-  and real-time auctions between verified students.
-</p>
-
-{/* FEATURES */}
-<div className="space-y-8 max-w-md">
-
-  {/* Feature 1 */}
-  <div className="flex gap-4 items-start">
-    <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-      1
-    </div>
-    <div>
-      <h3 className="font-semibold text-lg">
-        Live Auctions
-      </h3>
-      <p className="text-slate-400 text-sm">
-        Participate in real-time bidding with instant updates
-        and transparent competition across campus.
-      </p>
-    </div>
-  </div>
-
-  {/* Feature 2 */}
-  <div className="flex gap-4 items-start">
-    <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-      2
-    </div>
-    <div>
-      <h3 className="font-semibold text-lg">
-        Verified Student Network
-      </h3>
-      <p className="text-slate-400 text-sm">
-        Access is restricted to verified college users,
-        ensuring a trusted and safe trading environment.
-      </p>
-    </div>
-  </div>
-
-  {/* Feature 3 */}
-  <div className="flex gap-4 items-start">
-    <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-      3
-    </div>
-    <div>
-      <h3 className="font-semibold text-lg">
-        Instant Notifications
-      </h3>
-      <p className="text-slate-400 text-sm">
-        Stay informed with real-time alerts for bids,
-        offers, and auction activity.
-      </p>
-    </div>
-  </div>
-
-  {/* Feature 4 */}
-  <div className="flex gap-4 items-start">
-    <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-      4
-    </div>
-    <div>
-      <h3 className="font-semibold text-lg">
-        Secure OTP-Based Login
-      </h3>
-      <p className="text-slate-400 text-sm">
-        Added OTP verification enhances account security
-        and protects against unauthorized access.
-      </p>
-    </div>
-  </div>
-
-</div>
-
-</div>
-
-
-
-      {/* RIGHT */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-slate-100 px-4">
-        <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-        <Link
-          to="/"
-          className="absolute top-6 left-6 text-sm text-slate-600 hover:text-blue-600 font-medium"
-        >
-          ← Home
-        </Link>
-
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">
-            {step === "FORM" ? "Create Your Account" : "Verify OTP 🔐"}
+          <h2 className="text-4xl font-extrabold leading-tight mb-4 tracking-tight">
+            Join your campus<br />
+            <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">marketplace.</span>
           </h2>
+          <p className="text-slate-300 mb-12 max-w-sm leading-relaxed">
+            A secure, student-exclusive platform for buying, selling, and bidding on campus goods.
+          </p>
 
-          {/* ================= FORM ================= */}
-          {step === "FORM" && (
-            <form
-              onSubmit={handleSignupSubmit}
-              className="space-y-4"
-            >
-              <input
-                name="name"
-                placeholder="Full Name"
-                onChange={handleChange}
-                required
-                className="w-full border rounded-xl px-4 py-3"
-              />
-
-              <input
-                name="email"
-                type="email"
-                inputMode="email"
-                placeholder="College Email"
-                onChange={handleChange}
-                required
-                className="w-full border rounded-xl px-4 py-3"
-              />
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleChange}
-                required
-                className="w-full border rounded-xl px-4 py-3"
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  name="roll_no"
-                  placeholder="Roll Number"
-                  onChange={handleChange}
-                  required
-                  className="border rounded-xl px-4 py-3"
-                />
-                <input
-                  name="branch"
-                  placeholder="Branch"
-                  onChange={handleChange}
-                  required
-                  className="border rounded-xl px-4 py-3"
-                />
+          <div className="space-y-7">
+            {[
+              { icon: <Gavel       size={18} />, title: "Live Auctions",         desc: "Participate in real-time bidding across campus" },
+              { icon: <ShieldCheck size={18} />, title: "Verified Students Only", desc: "A trusted network of verified college peers"      },
+              { icon: <Bell        size={18} />, title: "Instant Notifications",  desc: "Stay updated on every bid and offer"              },
+              { icon: <Zap         size={18} />, title: "AI Price Suggestions",   desc: "Smart pricing powered by machine learning"         },
+            ].map((f) => (
+              <div key={f.title} className="flex items-start gap-4">
+                <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
+                  {f.icon}
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{f.title}</p>
+                  <p className="text-slate-400 text-sm mt-0.5">{f.desc}</p>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  name="year"
-                  inputMode="numeric"
-                  placeholder="Year (e.g. 3)"
-                  onChange={handleChange}
-                  required
-                  className="border rounded-xl px-4 py-3"
-                />
-                <input
-                  name="phone"
-                  inputMode="tel"
-                  placeholder="Phone (optional)"
-                  onChange={handleChange}
-                  className="border rounded-xl px-4 py-3"
-                />
-              </div>
+      {/* ── RIGHT PANEL ──────────────────────────────────── */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-slate-50 px-4 py-12">
+        <div className="w-full max-w-lg">
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
-              >
-                {loading ? "Sending OTP..." : "Sign Up"}
-              </button>
-            </form>
-          )}
+          {/* Mobile logo */}
+          <Link to="/" className="md:hidden block text-center text-2xl font-extrabold gradient-text mb-8">UniTrade</Link>
 
-          {/* ================= OTP ================= */}
-          {step === "OTP" && (
-            <form onSubmit={handleOTPSubmit} className="space-y-4">
-              <p className="text-center text-gray-500 text-sm">
-                OTP sent to <b>{form.email}</b>
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-8">
+            <div className="mb-7">
+              <h2 className="text-2xl font-bold text-slate-900">
+                {step === "FORM" ? "Create your account" : "Verify your email"}
+              </h2>
+              <p className="text-slate-500 text-sm mt-1.5">
+                {step === "FORM" ? "Fill in your details to get started" : `We sent a 6-digit code to ${form.email}`}
               </p>
+            </div>
 
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="6-digit OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                maxLength={6}
-                required
-                className="w-full border rounded-xl px-4 py-3 text-center tracking-widest text-lg"
-              />
+            {step === "FORM" && (
+              <form onSubmit={handleSignupSubmit} className="space-y-4">
+                <div>
+                  <label className="label">Full Name</label>
+                  <input name="name" placeholder="Your full name" onChange={handleChange} required className="input" />
+                </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
-              >
-                {loading ? "Verifying..." : "Verify OTP"}
-              </button>
+                <div>
+                  <label className="label">College Email</label>
+                  <input name="email" type="email" inputMode="email" placeholder="rollno@college.edu" onChange={handleChange} required className="input" />
+                </div>
 
-              <button
-                type="button"
-                onClick={() => setStep("FORM")}
-                className="w-full text-sm text-gray-500 hover:underline"
-              >
-                Edit details
-              </button>
-            </form>
-          )}
+                <div>
+                  <label className="label">Password</label>
+                  <input name="password" type="password" placeholder="Create a password" onChange={handleChange} required className="input" />
+                </div>
 
-          {step === "FORM" && (
-            <p className="text-sm text-center mt-6 text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Login
-              </Link>
-            </p>
-          )}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Roll Number</label>
+                    <input name="roll_no" placeholder="e.g. 2021CS001" onChange={handleChange} required className="input" />
+                  </div>
+                  <div>
+                    <label className="label">Branch</label>
+                    <input name="branch" placeholder="e.g. CSE" onChange={handleChange} required className="input" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label">Year</label>
+                    <input name="year" inputMode="numeric" placeholder="e.g. 3" onChange={handleChange} required className="input" />
+                  </div>
+                  <div>
+                    <label className="label">Phone <span className="text-slate-400 font-normal">(optional)</span></label>
+                    <input name="phone" inputMode="tel" placeholder="+91 XXXXXXXXXX" onChange={handleChange} className="input" />
+                  </div>
+                </div>
+
+                <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+                  {loading ? "Sending OTP…" : "Create Account"}
+                </button>
+              </form>
+            )}
+
+            {step === "OTP" && (
+              <form onSubmit={handleOTPSubmit} className="space-y-4">
+                <div>
+                  <label className="label">One-Time Password</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="• • • • • •"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    maxLength={6}
+                    required
+                    className="input text-center tracking-[0.4em] text-lg font-semibold"
+                  />
+                </div>
+                <button type="submit" disabled={loading} className="btn-primary w-full">
+                  {loading ? "Verifying…" : "Verify & Continue"}
+                </button>
+                <button type="button" onClick={() => setStep("FORM")} className="w-full text-sm text-slate-500 hover:text-slate-700 hover:underline transition-colors">
+                  Edit your details
+                </button>
+              </form>
+            )}
+
+            {step === "FORM" && (
+              <p className="text-sm text-center mt-6 text-slate-500">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline">
+                  Login
+                </Link>
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

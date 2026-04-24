@@ -46,6 +46,20 @@ const userSchema = new mongoose.Schema(
       type: String
     },
 
+    profilePic: {
+      public_id: {
+        type: String
+      },
+      url: {
+        type: String
+      }
+    },
+    
+    no_show_count: {
+      type: Number,
+      default: 0
+    },
+
     is_blocked: {
       type: Boolean,
       default: false

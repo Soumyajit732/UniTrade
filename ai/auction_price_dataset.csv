@@ -1,0 +1,301 @@
+auction_id,item_category,product_age_months,item_condition,original_price,starting_price,auction_duration_hours,day_of_week,semester_phase,total_bids,unique_bidders,seller_rating,listing_hour,final_price
+1000,Electronics & Gadgets,1,3,47098,11966,24,1,MidSem,24,11,4.5,18,19145
+1001,Transport & Mobility,8,4,3212,838,48,0,MidSem,22,15,4.8,19,1551
+1002,Kitchen & Food Items,2,4,2901,1211,24,5,MidSem,10,7,4.8,23,1983
+1003,Electronics & Gadgets,18,3,74429,23116,72,5,MidSem,17,13,4.2,14,42554
+1004,Miscellaneous,8,3,4456,1960,72,5,EndSem,20,12,4.8,20,3911
+1005,Personal Care,5,3,4009,1269,24,4,EndSem,22,7,3.7,20,2053
+1006,Hostel Essentials,24,5,5881,2173,24,5,Fest,21,7,4.5,11,3711
+1007,Kitchen & Food Items,24,2,4600,1634,48,6,Fest,10,6,4.1,12,2373
+1008,Miscellaneous,48,1,4946,1207,24,0,Fest,25,10,3.6,22,1707
+1009,Miscellaneous,5,2,9835,4099,72,1,Fest,15,7,5.0,20,5526
+1010,Sports & Fitness,30,5,6061,1901,24,0,Fest,8,3,3.6,10,2616
+1011,Sports & Fitness,3,5,12960,3942,48,6,EndSem,12,9,4.5,15,7880
+1012,Transport & Mobility,24,4,24412,5177,72,3,MidSem,22,16,4.2,23,9822
+1013,Electronics & Gadgets,30,5,27833,5685,24,6,EndSem,18,16,5.0,14,13173
+1014,Personal Care,10,4,2283,774,72,0,Fest,10,8,3.6,17,1187
+1015,Miscellaneous,48,2,4853,885,72,1,Fest,14,3,3.6,20,1032
+1016,Miscellaneous,11,3,5915,1917,24,0,EndSem,17,7,3.8,14,3102
+1017,Hostel Essentials,12,1,2292,542,72,2,Fest,8,4,3.9,11,618
+1018,Miscellaneous,5,3,9004,2675,24,0,Fest,24,9,3.9,10,4036
+1019,Sports & Fitness,5,3,11038,5179,72,1,Fest,18,3,4.1,18,6403
+1020,Hostel Essentials,24,2,7521,2239,72,6,EndSem,24,9,3.7,22,4005
+1021,Hostel Essentials,24,1,4372,1800,48,1,MidSem,17,10,4.0,22,2546
+1022,Clothing & Accessories,8,1,1937,628,72,2,MidSem,10,4,3.8,14,717
+1023,Books & Study,4,5,2983,999,72,1,EndSem,11,9,4.3,22,1847
+1024,Miscellaneous,7,3,9308,2833,48,2,EndSem,16,11,4.1,16,5099
+1025,Hostel Essentials,10,4,3350,1165,48,5,MidSem,24,10,4.9,22,2067
+1026,Hostel Essentials,3,3,6072,2700,24,0,MidSem,15,6,4.4,22,3706
+1027,Electronics & Gadgets,30,4,40485,6784,72,4,EndSem,23,14,3.7,17,13611
+1028,Miscellaneous,60,5,3607,628,48,3,EndSem,25,11,4.7,17,1218
+1029,Clothing & Accessories,9,4,6302,1666,48,5,MidSem,9,6,4.1,15,2653
+1030,Miscellaneous,30,4,8814,1551,48,2,EndSem,22,13,3.8,16,3041
+1031,Personal Care,1,4,4328,2112,72,0,EndSem,18,6,4.1,23,3469
+1032,Personal Care,6,1,3605,1446,48,2,MidSem,12,10,4.6,10,2045
+1033,Sports & Fitness,8,1,6051,2104,24,4,MidSem,23,10,3.9,15,2976
+1034,Hostel Essentials,4,2,1210,318,72,6,Fest,9,6,4.5,14,461
+1035,Electronics & Gadgets,2,3,84827,37486,24,3,EndSem,27,23,4.6,20,87921
+1036,Kitchen & Food Items,60,4,3140,590,24,6,EndSem,16,14,4.2,15,1272
+1037,Hostel Essentials,36,2,3290,731,72,3,EndSem,24,12,4.6,17,1297
+1038,Books & Study,3,3,2882,1092,48,3,Fest,15,8,4.6,14,1598
+1039,Kitchen & Food Items,9,2,6743,2667,48,5,Fest,10,7,4.7,14,3995
+1040,Clothing & Accessories,12,2,2873,1087,24,5,EndSem,18,7,3.9,17,1845
+1041,Personal Care,11,2,1106,269,72,2,MidSem,9,6,4.3,16,350
+1042,Clothing & Accessories,48,4,7825,1788,72,0,MidSem,12,6,4.5,12,2579
+1043,Clothing & Accessories,6,5,8181,1997,48,5,EndSem,25,13,3.9,14,4355
+1044,Clothing & Accessories,24,1,5152,1810,72,5,Fest,16,7,3.7,21,2585
+1045,Kitchen & Food Items,18,3,5399,1774,24,0,MidSem,17,3,4.5,14,2193
+1046,Books & Study,6,4,2285,1070,48,2,EndSem,25,13,3.7,12,2098
+1047,Sports & Fitness,24,4,8561,2229,24,6,EndSem,17,9,3.6,18,4299
+1048,Sports & Fitness,36,4,6375,1226,72,4,MidSem,11,5,4.3,18,1713
+1049,Transport & Mobility,3,2,18120,6181,48,3,MidSem,25,17,3.8,19,11142
+1050,Miscellaneous,5,1,5891,2570,72,5,EndSem,21,11,4.2,15,4651
+1051,Miscellaneous,60,4,7730,806,72,3,Fest,17,9,5.0,22,1272
+1052,Hostel Essentials,36,1,3719,773,24,3,Fest,8,5,4.2,14,917
+1053,Sports & Fitness,18,1,8226,2219,72,2,MidSem,12,4,5.0,22,2533
+1054,Electronics & Gadgets,30,2,54251,8545,72,3,Fest,16,12,3.6,23,13462
+1055,Transport & Mobility,8,4,10608,4552,48,2,Fest,20,11,4.9,19,7601
+1056,Kitchen & Food Items,24,3,1373,410,72,2,MidSem,15,9,3.5,23,618
+1057,Books & Study,36,3,1526,442,72,5,MidSem,21,7,4.2,19,693
+1058,Sports & Fitness,5,1,14246,5261,48,6,MidSem,22,7,4.9,22,7513
+1059,Kitchen & Food Items,11,1,6040,1465,48,0,EndSem,17,10,4.5,20,2365
+1060,Kitchen & Food Items,18,3,3187,1068,48,5,EndSem,16,12,3.6,10,2131
+1061,Kitchen & Food Items,36,1,4216,957,72,5,MidSem,21,9,3.6,17,1453
+1062,Transport & Mobility,9,1,10119,4291,72,2,MidSem,23,18,5.0,23,7630
+1063,Personal Care,3,2,2181,955,72,1,Fest,21,6,4.8,15,1244
+1064,Hostel Essentials,1,3,3053,1031,24,4,EndSem,13,7,3.6,21,1668
+1065,Transport & Mobility,48,1,18605,2965,72,0,Fest,31,19,4.9,10,5407
+1066,Personal Care,18,4,5483,1092,48,4,Fest,16,8,5.0,18,1674
+1067,Kitchen & Food Items,30,5,5863,1489,24,3,EndSem,24,16,4.6,15,3227
+1068,Transport & Mobility,11,3,8001,1903,72,2,MidSem,25,13,3.7,15,3217
+1069,Transport & Mobility,2,3,14522,4337,24,2,Fest,28,14,3.9,13,7530
+1070,Transport & Mobility,60,5,3860,741,48,0,MidSem,19,16,3.7,20,1457
+1071,Books & Study,3,5,2015,873,72,4,MidSem,7,3,3.7,19,1201
+1072,Books & Study,3,3,1618,439,48,0,EndSem,17,15,3.8,19,870
+1073,Books & Study,1,2,1843,684,48,1,MidSem,19,9,4.6,18,984
+1074,Miscellaneous,12,1,8033,2780,72,5,EndSem,18,10,3.5,15,4905
+1075,Hostel Essentials,30,3,2993,887,48,5,EndSem,25,11,3.8,18,1729
+1076,Electronics & Gadgets,48,5,40415,4838,72,1,Fest,25,11,4.4,17,8418
+1077,Personal Care,11,3,2750,786,24,2,EndSem,15,13,4.1,14,1486
+1078,Electronics & Gadgets,3,5,81462,25702,48,4,MidSem,18,15,4.7,23,49394
+1079,Sports & Fitness,3,5,6059,2022,48,3,EndSem,25,11,4.4,15,3922
+1080,Electronics & Gadgets,11,1,88133,35263,48,5,Fest,27,16,4.6,11,64787
+1081,Kitchen & Food Items,60,4,1265,128,48,1,MidSem,22,8,4.2,13,196
+1082,Hostel Essentials,5,1,7315,3345,72,1,Fest,13,9,3.7,23,4579
+1083,Hostel Essentials,30,1,6894,1807,24,2,EndSem,23,11,4.9,17,2999
+1084,Personal Care,10,4,2548,898,48,4,MidSem,10,4,3.6,12,1213
+1085,Kitchen & Food Items,30,5,3363,821,48,1,EndSem,14,9,3.5,11,1518
+1086,Sports & Fitness,5,2,9740,4478,24,2,MidSem,15,5,4.9,19,5630
+1087,Miscellaneous,24,1,8489,1714,48,4,Fest,15,3,4.3,13,1879
+1088,Hostel Essentials,10,4,2970,752,72,4,Fest,11,3,4.8,10,982
+1089,Transport & Mobility,12,3,14701,3565,48,4,EndSem,35,23,3.8,12,8361
+1090,Electronics & Gadgets,30,1,53462,10278,72,3,EndSem,23,16,4.8,10,19397
+1091,Sports & Fitness,9,1,8553,3390,48,6,Fest,21,7,3.6,16,4841
+1092,Electronics & Gadgets,24,5,38652,8079,72,5,EndSem,31,22,3.6,23,20924
+1093,Sports & Fitness,24,3,12996,3088,72,5,EndSem,10,7,3.9,20,5460
+1094,Sports & Fitness,12,4,11913,4293,72,2,EndSem,18,13,4.9,10,8418
+1095,Hostel Essentials,36,5,3144,1091,48,1,MidSem,20,5,3.6,12,1600
+1096,Personal Care,3,3,5724,2458,72,1,MidSem,20,6,3.7,22,3374
+1097,Personal Care,1,3,1038,357,72,5,EndSem,30,15,4.4,12,761
+1098,Sports & Fitness,3,4,7644,2680,24,6,MidSem,11,5,3.7,15,4146
+1099,Clothing & Accessories,12,5,9824,3536,24,4,Fest,16,5,4.9,12,5188
+1100,Hostel Essentials,11,5,1372,524,24,3,Fest,19,7,4.9,17,816
+1101,Clothing & Accessories,18,3,3389,854,72,1,EndSem,21,13,3.7,15,1614
+1102,Miscellaneous,60,1,2586,271,48,6,Fest,14,9,4.9,12,411
+1103,Sports & Fitness,11,2,10433,4682,72,3,MidSem,17,6,4.0,10,6099
+1104,Kitchen & Food Items,36,5,4030,1137,48,0,EndSem,14,7,4.3,11,1999
+1105,Transport & Mobility,48,4,12165,2314,48,4,EndSem,29,19,3.6,10,5168
+1106,Hostel Essentials,11,4,5966,1638,72,5,EndSem,27,14,4.3,17,3532
+1107,Books & Study,12,3,2443,950,72,3,MidSem,13,9,4.7,13,1433
+1108,Books & Study,4,2,1335,573,48,6,Fest,16,3,3.7,13,754
+1109,Miscellaneous,11,4,6804,2536,72,5,Fest,18,7,4.2,13,4154
+1110,Kitchen & Food Items,60,3,6154,829,72,2,EndSem,18,10,4.7,22,1454
+1111,Hostel Essentials,10,1,4623,2006,48,4,Fest,11,7,3.7,21,2564
+1112,Clothing & Accessories,8,1,1660,423,24,0,Fest,13,5,4.5,17,502
+1113,Personal Care,7,3,2402,941,24,1,EndSem,23,8,4.1,17,1565
+1114,Hostel Essentials,10,1,5937,2149,24,6,Fest,16,10,3.8,11,3362
+1115,Sports & Fitness,6,4,2230,627,72,3,EndSem,19,11,4.5,12,1172
+1116,Hostel Essentials,36,3,4142,1343,72,0,EndSem,14,12,4.5,17,2478
+1117,Kitchen & Food Items,6,4,3510,1219,48,5,Fest,16,8,4.6,17,2052
+1118,Miscellaneous,7,2,2011,854,72,1,Fest,9,5,4.0,18,1073
+1119,Personal Care,4,2,4704,1617,24,4,EndSem,18,10,3.9,10,2723
+1120,Clothing & Accessories,3,1,9666,3026,24,6,MidSem,16,9,5.0,16,4596
+1121,Personal Care,18,4,4901,1400,72,1,MidSem,9,3,4.2,21,1828
+1122,Miscellaneous,24,5,2848,558,72,3,Fest,8,3,3.8,11,768
+1123,Books & Study,30,5,1459,485,24,1,Fest,12,7,4.7,21,755
+1124,Sports & Fitness,11,2,12816,4603,72,5,MidSem,19,9,4.2,15,7314
+1125,Transport & Mobility,48,3,16377,3209,48,6,Fest,19,17,4.3,16,6490
+1126,Miscellaneous,48,2,7079,1005,72,6,MidSem,9,3,4.1,19,1322
+1127,Books & Study,3,2,562,268,24,5,EndSem,18,10,4.9,18,491
+1128,Sports & Fitness,10,4,12628,4304,72,3,EndSem,18,11,4.1,19,8048
+1129,Clothing & Accessories,5,1,7641,2243,72,6,MidSem,20,10,4.5,20,3509
+1130,Sports & Fitness,9,4,4756,1319,72,5,MidSem,18,3,4.8,23,1920
+1131,Books & Study,1,4,1395,474,72,5,Fest,22,10,4.2,10,841
+1132,Miscellaneous,60,4,9228,1673,72,3,MidSem,7,4,4.3,13,2261
+1133,Clothing & Accessories,48,3,6912,1953,24,2,Fest,16,4,5.0,20,2503
+1134,Books & Study,3,4,538,196,48,5,EndSem,12,7,3.8,23,360
+1135,Personal Care,9,1,628,217,72,6,EndSem,13,9,4.3,19,373
+1136,Transport & Mobility,60,3,7585,1090,24,2,Fest,21,19,4.5,22,2140
+1137,Personal Care,36,2,5912,795,72,2,MidSem,7,4,3.9,16,963
+1138,Hostel Essentials,18,3,1042,268,24,3,EndSem,14,12,3.6,18,494
+1139,Electronics & Gadgets,11,4,16617,4056,48,1,MidSem,22,16,4.2,11,7695
+1140,Hostel Essentials,24,3,7411,2598,24,3,MidSem,11,5,3.5,16,3448
+1141,Sports & Fitness,18,3,9055,2926,24,3,EndSem,24,13,4.7,15,5532
+1142,Transport & Mobility,9,4,6731,2916,24,3,EndSem,25,21,4.5,13,6778
+1143,Kitchen & Food Items,5,4,5269,2406,72,3,Fest,17,3,5.0,21,3143
+1144,Miscellaneous,3,1,7547,3599,48,6,EndSem,10,7,3.9,18,5859
+1145,Miscellaneous,60,5,3469,466,24,3,MidSem,15,7,4.9,11,726
+1146,Electronics & Gadgets,5,3,55880,14183,72,5,EndSem,21,19,4.7,11,32814
+1147,Books & Study,11,1,1855,827,24,6,EndSem,21,9,4.5,16,1421
+1148,Books & Study,7,4,1640,696,72,1,EndSem,21,12,3.7,20,1333
+1149,Personal Care,48,3,4250,770,72,6,EndSem,15,8,3.7,14,1396
+1150,Electronics & Gadgets,6,3,33528,11339,72,5,Fest,21,12,3.9,12,20358
+1151,Sports & Fitness,30,5,2157,704,48,5,EndSem,24,15,3.8,19,1599
+1152,Books & Study,8,3,2373,860,24,4,MidSem,21,7,4.3,15,1219
+1153,Miscellaneous,2,4,5305,1752,24,3,MidSem,11,6,4.7,19,2527
+1154,Sports & Fitness,24,2,5390,1790,24,2,Fest,13,7,4.4,23,2413
+1155,Miscellaneous,4,2,3396,1394,24,6,Fest,18,9,3.7,20,2215
+1156,Kitchen & Food Items,24,4,3800,1050,48,2,Fest,18,3,4.7,21,1371
+1157,Electronics & Gadgets,30,3,23300,5857,48,4,Fest,31,17,4.0,20,10968
+1158,Books & Study,2,1,502,245,24,5,EndSem,13,10,4.5,14,432
+1159,Electronics & Gadgets,12,2,21787,5419,24,1,Fest,20,18,3.5,15,10015
+1160,Electronics & Gadgets,24,2,77613,16982,48,1,EndSem,25,15,4.3,19,32466
+1161,Hostel Essentials,30,3,2240,902,24,6,MidSem,16,9,4.9,15,1496
+1162,Hostel Essentials,8,3,5923,1713,72,4,MidSem,15,9,4.5,22,2585
+1163,Clothing & Accessories,36,4,1963,375,72,3,EndSem,25,11,3.6,19,701
+1164,Electronics & Gadgets,1,3,43277,18831,48,5,EndSem,19,16,4.0,18,41000
+1165,Clothing & Accessories,5,5,1883,559,48,0,EndSem,20,8,4.6,21,1008
+1166,Hostel Essentials,4,1,5066,1702,72,6,EndSem,14,7,4.7,14,2771
+1167,Miscellaneous,3,3,3734,1238,48,6,MidSem,9,4,4.6,10,1772
+1168,Books & Study,1,2,644,195,24,3,Fest,14,8,4.7,19,271
+1169,Sports & Fitness,4,5,5656,2564,48,2,MidSem,12,10,4.1,14,4344
+1170,Kitchen & Food Items,8,4,6500,1504,48,0,MidSem,20,8,4.8,10,2306
+1171,Sports & Fitness,1,4,5361,2277,24,0,MidSem,22,9,4.8,17,3595
+1172,Electronics & Gadgets,4,5,32499,9630,48,6,EndSem,30,24,3.9,13,25817
+1173,Hostel Essentials,4,2,4817,2318,24,3,EndSem,30,15,3.7,12,4431
+1174,Kitchen & Food Items,2,2,3414,1402,48,6,MidSem,11,3,4.8,18,1845
+1175,Miscellaneous,8,1,4246,1780,48,5,Fest,15,4,4.4,23,2299
+1176,Electronics & Gadgets,1,1,40919,19570,24,1,Fest,29,20,3.5,20,36578
+1177,Transport & Mobility,6,3,9132,3489,48,3,Fest,18,15,3.9,12,6216
+1178,Transport & Mobility,7,5,23668,9654,48,4,Fest,25,19,3.8,15,20308
+1179,Clothing & Accessories,1,3,4613,1447,72,0,MidSem,16,9,4.9,23,2183
+1180,Hostel Essentials,6,2,1231,548,48,4,EndSem,13,11,3.6,13,948
+1181,Clothing & Accessories,1,5,4100,1076,24,4,Fest,19,5,3.7,18,1578
+1182,Sports & Fitness,3,3,3655,1602,48,5,EndSem,15,10,4.5,23,3051
+1183,Hostel Essentials,18,3,6970,1874,48,6,Fest,18,6,4.3,17,2853
+1184,Hostel Essentials,11,1,2375,709,24,5,MidSem,14,8,4.7,21,1044
+1185,Books & Study,2,4,1938,524,48,6,Fest,10,6,4.2,22,834
+1186,Books & Study,10,1,2037,724,24,2,Fest,23,10,3.5,20,1024
+1187,Hostel Essentials,24,2,2683,980,48,1,MidSem,11,3,4.4,23,1143
+1188,Personal Care,5,1,4434,1130,24,1,Fest,10,7,4.2,11,1444
+1189,Kitchen & Food Items,18,4,3674,1031,48,0,EndSem,22,16,3.8,14,2162
+1190,Books & Study,5,1,2915,1287,72,3,Fest,21,10,4.8,17,1820
+1191,Kitchen & Food Items,3,4,1485,709,24,1,MidSem,12,9,5.0,16,1119
+1192,Clothing & Accessories,5,5,1897,702,48,4,EndSem,12,9,4.1,12,1298
+1193,Electronics & Gadgets,4,5,28237,10431,48,0,MidSem,22,18,4.4,20,21468
+1194,Transport & Mobility,2,4,10784,4781,48,2,EndSem,24,20,4.0,21,10896
+1195,Personal Care,11,3,3835,1426,48,6,MidSem,8,5,4.0,18,2106
+1196,Transport & Mobility,5,5,3948,974,48,5,MidSem,32,17,4.2,16,2106
+1197,Electronics & Gadgets,1,2,63819,21125,48,5,Fest,15,13,4.1,12,37410
+1198,Clothing & Accessories,8,2,9209,3519,72,6,MidSem,12,6,4.4,14,5112
+1199,Kitchen & Food Items,24,4,2975,895,24,4,Fest,18,8,4.5,19,1372
+1200,Kitchen & Food Items,10,1,2768,740,72,6,MidSem,17,3,4.8,22,922
+1201,Transport & Mobility,11,2,24476,8407,72,6,MidSem,28,16,4.3,22,16034
+1202,Personal Care,12,5,4356,1577,72,6,Fest,17,5,4.8,20,2550
+1203,Electronics & Gadgets,8,3,44272,14256,24,3,MidSem,21,16,4.3,23,26049
+1204,Transport & Mobility,48,3,4771,577,72,1,MidSem,32,20,5.0,15,1159
+1205,Books & Study,1,4,1148,321,48,5,EndSem,24,15,4.1,10,706
+1206,Miscellaneous,7,3,5076,1446,48,2,MidSem,12,4,4.3,14,1853
+1207,Hostel Essentials,3,1,6962,3236,24,2,EndSem,16,12,4.9,22,5518
+1208,Transport & Mobility,1,2,7299,2463,72,6,MidSem,32,18,4.3,10,4921
+1209,Books & Study,4,1,2741,1128,24,5,Fest,9,3,4.1,11,1405
+1210,Miscellaneous,9,5,9154,2496,24,6,EndSem,24,11,4.1,12,5216
+1211,Books & Study,60,4,864,128,24,6,Fest,17,4,4.6,14,192
+1212,Clothing & Accessories,30,3,3662,952,24,0,MidSem,18,3,3.7,20,1177
+1213,Hostel Essentials,11,3,7005,2317,48,2,EndSem,28,16,4.8,12,4697
+1214,Electronics & Gadgets,5,1,35892,14767,72,0,Fest,26,17,3.7,16,25587
+1215,Personal Care,2,1,5128,2464,72,6,EndSem,22,10,4.6,17,4347
+1216,Sports & Fitness,18,2,2894,679,48,2,MidSem,14,8,3.6,13,946
+1217,Miscellaneous,18,4,6178,1416,48,5,Fest,6,3,4.1,10,2062
+1218,Miscellaneous,60,1,8474,1652,48,6,MidSem,21,6,4.2,18,2284
+1219,Personal Care,12,4,3409,1097,48,5,MidSem,7,3,4.2,23,1597
+1220,Transport & Mobility,4,3,9145,2411,48,0,Fest,25,16,4.5,18,4405
+1221,Hostel Essentials,36,1,4545,1611,24,0,EndSem,22,14,5.0,21,2893
+1222,Clothing & Accessories,9,4,2985,890,72,4,EndSem,15,10,4.4,14,1623
+1223,Sports & Fitness,5,2,13375,5106,72,5,EndSem,27,13,3.5,11,10063
+1224,Books & Study,18,2,1159,284,24,5,EndSem,16,9,4.7,11,508
+1225,Miscellaneous,8,5,7349,2394,72,2,Fest,5,3,4.6,13,3295
+1226,Personal Care,8,3,1953,514,24,5,Fest,12,4,3.6,14,735
+1227,Miscellaneous,9,2,3518,1543,72,0,Fest,16,7,4.7,18,2080
+1228,Sports & Fitness,3,3,5012,1892,48,0,EndSem,22,10,4.0,15,3319
+1229,Kitchen & Food Items,7,5,1439,637,72,4,MidSem,15,3,4.8,16,876
+1230,Electronics & Gadgets,18,3,85809,16346,72,1,EndSem,28,14,4.3,10,31651
+1231,Electronics & Gadgets,7,2,70601,23051,48,0,MidSem,13,9,4.7,18,33172
+1232,Electronics & Gadgets,8,3,68429,25190,72,0,Fest,22,9,4.8,15,38014
+1233,Miscellaneous,4,3,1504,531,72,1,MidSem,23,9,4.7,18,801
+1234,Kitchen & Food Items,5,3,1509,550,24,2,MidSem,13,8,4.1,20,805
+1235,Miscellaneous,5,2,1891,831,72,3,Fest,10,4,4.5,14,1007
+1236,Electronics & Gadgets,7,5,78857,33526,48,3,EndSem,32,21,4.4,22,80279
+1237,Sports & Fitness,24,2,6033,1423,72,2,EndSem,23,16,4.7,17,2785
+1238,Miscellaneous,4,2,1305,578,72,0,Fest,23,9,4.4,10,831
+1239,Miscellaneous,9,5,5767,1487,72,4,MidSem,16,9,4.3,20,2452
+1240,Clothing & Accessories,6,5,3195,920,48,1,MidSem,14,7,3.9,20,1433
+1241,Clothing & Accessories,48,3,1453,336,48,6,Fest,18,7,4.3,12,526
+1242,Transport & Mobility,18,3,19930,5808,48,4,MidSem,21,17,3.8,18,10876
+1243,Kitchen & Food Items,7,2,5915,2365,48,5,EndSem,25,14,3.7,23,4768
+1244,Transport & Mobility,1,2,7190,1875,48,1,Fest,27,14,4.6,23,3124
+1245,Kitchen & Food Items,3,2,2297,999,24,4,Fest,11,7,4.6,15,1346
+1246,Personal Care,3,2,4631,2025,72,0,MidSem,21,10,4.4,22,3006
+1247,Miscellaneous,48,1,7892,1405,24,5,Fest,14,9,4.9,17,2134
+1248,Transport & Mobility,12,5,16942,5794,72,3,EndSem,25,14,4.3,18,12030
+1249,Books & Study,18,2,2897,1149,48,4,EndSem,27,13,3.8,18,2092
+1250,Miscellaneous,36,2,7522,2089,72,0,Fest,15,6,4.7,12,2721
+1251,Electronics & Gadgets,7,5,67502,27252,24,3,Fest,18,15,3.9,15,52373
+1252,Electronics & Gadgets,2,4,67513,26854,48,0,MidSem,17,15,4.7,18,49728
+1253,Miscellaneous,8,5,7544,2347,48,3,Fest,16,6,3.5,21,3550
+1254,Electronics & Gadgets,3,5,52289,18160,48,4,MidSem,22,14,4.3,18,34074
+1255,Electronics & Gadgets,48,3,59560,11709,72,3,MidSem,32,20,4.2,19,23524
+1256,Books & Study,36,1,1441,501,72,4,MidSem,12,7,3.9,16,640
+1257,Sports & Fitness,3,5,7142,2620,24,1,Fest,21,6,3.9,13,3963
+1258,Clothing & Accessories,8,5,2764,1130,72,0,EndSem,22,13,4.8,19,2294
+1259,Kitchen & Food Items,36,2,943,292,24,4,EndSem,22,13,5.0,21,531
+1260,Miscellaneous,30,3,6924,1953,48,1,Fest,12,7,3.9,19,2769
+1261,Sports & Fitness,12,2,5449,1472,24,4,Fest,21,6,3.6,14,1917
+1262,Clothing & Accessories,60,4,3250,560,72,4,Fest,22,8,4.2,14,858
+1263,Miscellaneous,2,4,6483,2000,48,4,Fest,14,7,3.5,11,2976
+1264,Sports & Fitness,7,5,14784,6641,48,4,EndSem,29,14,3.8,22,13789
+1265,Sports & Fitness,24,5,3168,1088,72,2,Fest,15,9,4.8,22,1794
+1266,Sports & Fitness,48,4,5012,1613,72,5,MidSem,10,6,4.1,11,2569
+1267,Electronics & Gadgets,36,5,22055,4103,24,5,EndSem,32,19,3.9,20,10067
+1268,Hostel Essentials,5,5,6435,3034,72,3,MidSem,16,5,4.4,20,4451
+1269,Transport & Mobility,48,5,14376,2151,24,2,MidSem,17,10,3.9,18,3644
+1270,Books & Study,36,4,1447,353,48,4,EndSem,17,13,4.6,20,692
+1271,Transport & Mobility,18,2,5595,1983,48,1,MidSem,18,12,3.7,17,3124
+1272,Personal Care,9,5,681,293,48,2,MidSem,23,10,3.5,11,496
+1273,Hostel Essentials,1,4,3552,954,24,0,EndSem,22,12,4.2,13,1827
+1274,Kitchen & Food Items,18,1,2524,897,24,4,Fest,15,6,4.1,14,1105
+1275,Sports & Fitness,6,1,4001,1808,72,1,MidSem,18,6,4.2,10,2228
+1276,Hostel Essentials,9,5,2991,979,24,1,MidSem,13,10,4.5,15,1658
+1277,Books & Study,2,3,1453,645,48,5,MidSem,16,3,4.1,21,894
+1278,Hostel Essentials,9,1,3414,1258,48,5,EndSem,14,11,4.3,17,2276
+1279,Kitchen & Food Items,9,5,3605,1456,24,2,Fest,16,4,5.0,23,2070
+1280,Transport & Mobility,7,5,21070,5357,72,5,MidSem,14,10,4.8,13,9881
+1281,Electronics & Gadgets,36,2,27943,3370,24,4,Fest,14,9,4.5,23,4849
+1282,Electronics & Gadgets,30,1,62307,13099,72,0,EndSem,18,15,4.6,18,24125
+1283,Transport & Mobility,7,2,24524,9919,72,2,Fest,24,21,3.8,12,19684
+1284,Miscellaneous,18,5,6319,2389,48,6,Fest,24,9,4.6,19,4298
+1285,Clothing & Accessories,60,2,6698,1329,48,4,MidSem,11,5,3.5,13,1670
+1286,Clothing & Accessories,11,1,3334,867,48,2,Fest,11,6,3.9,14,1068
+1287,Electronics & Gadgets,18,5,43499,12663,48,0,Fest,29,15,3.6,22,24335
+1288,Sports & Fitness,12,4,14622,5104,48,4,Fest,12,5,4.3,13,7131
+1289,Hostel Essentials,2,4,5134,1458,48,0,EndSem,15,9,3.6,18,2593
+1290,Transport & Mobility,5,2,21327,6245,24,2,EndSem,29,17,4.1,15,12507
+1291,Sports & Fitness,7,3,12738,4915,48,0,MidSem,18,6,4.1,22,6746
+1292,Electronics & Gadgets,4,1,46856,15966,24,2,MidSem,24,14,4.3,14,25487
+1293,Miscellaneous,36,5,1984,407,72,4,EndSem,21,9,4.9,11,752
+1294,Transport & Mobility,9,3,3625,1538,48,6,Fest,16,11,4.3,17,2691
+1295,Miscellaneous,1,1,6681,2785,48,5,EndSem,25,11,3.6,14,5040
+1296,Transport & Mobility,1,5,10391,3902,72,4,Fest,22,17,4.4,16,7853
+1297,Kitchen & Food Items,11,4,5259,1531,72,4,MidSem,23,9,3.7,19,2417
+1298,Hostel Essentials,11,1,1969,874,48,3,EndSem,19,15,4.7,11,1609
+1299,Hostel Essentials,6,1,6016,1982,72,6,EndSem,24,11,4.5,12,3587

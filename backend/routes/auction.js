@@ -10,7 +10,9 @@ const {
   getAuctionById,
   getMyCreatedAuctions,
   getMyWonAuctions,
-  getMyParticipatedAuctions
+  getMyParticipatedAuctions,
+  markComplete,
+  reportNoShow
 } = require("../controllers/auction");
 
 /* ================= USER HISTORY ROUTES (MUST COME FIRST) ================= */
@@ -32,6 +34,10 @@ router.post("/create", auth, upload.array("images", 5), createAuction);
 
 // Get all active auctions (public)
 router.get("/", auth, getActiveAuctions);
+
+// Transaction resolution — seller only
+router.put("/:id/complete", auth, markComplete);
+router.put("/:id/no-show", auth, reportNoShow);
 
 // Get single auction by ID (public) — MUST BE LAST
 router.get("/:id", getAuctionById);
